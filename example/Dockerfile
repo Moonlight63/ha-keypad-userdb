@@ -2,13 +2,15 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
-# Execute during the build of the image
-ARG TEMPIO_VERSION BUILD_ARCH
 RUN \
-    curl -sSLf -o /usr/bin/tempio \
-    "https://github.com/home-assistant/tempio/releases/download/${TEMPIO_VERSION}/tempio_${BUILD_ARCH}"
-
-RUN apk add --update npm
+    apk update && \
+    apk add -U curl bash ca-certificates openssl ncurses coreutils python3 make gcc g++ libgcc linux-headers grep util-linux binutils findutils && \
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash && \
+    export NVM_DIR="$HOME/.nvm" && \
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && \
+    nvm install -s lts/hydrogen \
+    && rm -f -r \
+        /tmp/*
 
 WORKDIR /data
 

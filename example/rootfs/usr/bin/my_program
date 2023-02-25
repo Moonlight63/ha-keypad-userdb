@@ -1,5 +1,5 @@
 #!/bin/bash
-exec npm install
-exec npm run build
-exec npm run start
+npm install
+npm run build
+npm run start
 echo "All done!" > /share/example_addon_output.txt
