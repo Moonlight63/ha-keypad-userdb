@@ -21,4 +21,4 @@ ports:
 #   message: "Hello world..."
 # schema:
 #   message: "str?"
-# image: "ghcr.io/home-assistant/{arch}-addon-example"
+image: "ghcr.io/Moonlight63/{arch}-ha-addon-keypad-users-database"
