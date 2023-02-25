@@ -3,7 +3,7 @@ name: Keypad Users Database
 version: "1.2.1"
 slug: example
 description: A simple keystonejs app with a database schema for storing a basic list of users with pincodes, rfid tags, and fingerprints, for use with shell scripts in homeassistant for retreiving the information.
-url: "https://github.com/home-assistant/addons-example/tree/main/example"
+url: "https://github.com/Moonlight63/ha-keypad-userdb/tree/main/example"
 arch:
   - armhf
   - armv7

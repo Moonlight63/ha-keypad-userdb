@@ -18,4 +18,4 @@
 bashio::log.info "Starting Node Server..."
 
 ## Run your program
-bashio::log.info exec /usr/bin/my_program
+exec /usr/bin/my_program
