@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  // output   = "client"
+}
+
+datasource sqlite {
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  provider          = "sqlite"
+}
+
+model User {
+  id        String    @id @default(cuid())
+  name      String    @default("")
+  prints    Print[]   @relation("Print_user")
+  code      Code?     @relation("Code_user")
+  tag       Tag?      @relation("Tag_user")
+  createdAt DateTime? @default(now())
+  active    Boolean   @default(true)
+}
+
+model Print {
+  id     String @id @default(cuid())
+  code   String @unique @default("")
+  user   User   @relation("Print_user", fields: [userId], references: [id], onDelete: Cascade)
+  userId String @map("user")
+
+  @@index([userId])
+}
+
+model Code {
+  id     String @id @default(cuid())
+  code   String @unique @default("")
+  user   User   @relation("Code_user", fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique @map("user")
+}
+
+model Tag {
+  id     String @id @default(cuid())
+  code   String @unique @default("")
+  user   User   @relation("Tag_user", fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique @map("user")
+}

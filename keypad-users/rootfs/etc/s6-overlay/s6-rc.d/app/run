@@ -1,0 +1,32 @@
+#!/command/with-contenv bashio
+# shellcheck shell=bash
+# ==============================================================================
+# Home Assistant Community Add-on: AdGuard Home
+# Runs the AdGuard Home server
+# ==============================================================================
+declare -a options
+
+bashio::log.info "Starting Nuxt App server..."
+
+# RUN AdGuard Home server
+cd /opt/app || exit
+if ! bashio::fs.file_exists ".output/server/index.mjs"; then
+    exit
+fi
+export NODE_ENV=production
+# export NUXT_PUBLIC_API_BASE="$(bashio::addon.ingress_entry)/api/"
+export NUXT_APP_BASE_URL=$(bashio::addon.ingress_entry)
+export NUXT_PUBLIC_PIN_LENGTH="$(bashio::config 'pin_length')"
+export NUXT_PUBLIC_PRINT_LENGTH="$(bashio::config 'print_length')"
+export NUXT_PUBLIC_RFID_LENGTH="$(bashio::config 'rfid_length')"
+export NUXT_HA_TOKEN=${SUPERVISOR_TOKEN}
+export HA_TOKEN=${SUPERVISOR_TOKEN}
+
+curl -X GET -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" -H "Content-Type: application/json" http://supervisor/core/api/config
+
+curl -sS -X "POST" \
+    -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" \
+    --data-binary "{\"Test\":\"Test\"}" \
+    "http://supervisor/core/api/events/keypaddb.started"
+
+exec node .output/server/index.mjs

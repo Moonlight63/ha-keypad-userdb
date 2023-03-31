@@ -1,0 +1,5 @@
+#!/bin/bash
+npm install
+npm run build
+npm run start
+echo "All done!" > /share/example_addon_output.txt

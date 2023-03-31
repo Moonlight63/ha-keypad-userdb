@@ -1,0 +1,28 @@
+{
+  "editor.tabSize": 2,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[js]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[ts]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "vue"
+  ],
+  "tailwindCSS.experimental.configFile": ".nuxt/tailwind.config.cjs",
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "volar.autoCompleteRefs": true,
+}

@@ -1,6 +1,6 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: Keypad Users Database
-version: "1.2.1"
+version: "1.2.2"
 slug: example
 description: A simple keystonejs app with a database schema for storing a basic list of users with pincodes, rfid tags, and fingerprints, for use with shell scripts in homeassistant for retreiving the information.
 url: "https://github.com/Moonlight63/ha-keypad-userdb/tree/main/example"
@@ -11,14 +11,28 @@ arch:
   - amd64
   - i386
 init: false
+webui: "http://[HOST]:[PORT:3005]"
 ingress: true
-ingress_port: 3000
-# map:
-#   - share:rw
+# ingress_port: 1596
+ingress_stream: true
+map:
+  - share:rw
+
 ports:
-  3000/tcp: 3000
+  3000/tcp: 3005
+  # 1337/tcp: 1337
+ports_description:
+  3000/tcp: Web interface
+# ports:
+#   3000/tcp: 3000
 # options:
-#   message: "Hello world..."
+#   ssl: false
+#   leave_front_door_open: true
+#   certfile: fullchain.pem
+#   keyfile: privkey.pem
 # schema:
-#   message: "str?"
-image: "ghcr.io/Moonlight63/{arch}-ha-addon-keypad-users-database"
+#   leave_front_door_open: bool?
+#   ssl: bool
+#   certfile: str
+#   keyfile: str
+# image: "ghcr.io/Moonlight63/{arch}-ha-addon-keypad-users-database"

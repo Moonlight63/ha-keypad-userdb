@@ -15,7 +15,27 @@
 # ## Print the message the user supplied, defaults to "Hello World..."
 # bashio::log.info "${message:="Hello World..."}"
 
+# bashio::log.info "Installing npm modules..."
+# npm --prefix /usr/src/ install
+
+# bashio::log.info "Fixing database Schema..."
+# npm --prefix /usr/src/ run postinstall
+
+# bashio::log.info "Building app sources..."
+# npm --prefix /usr/src/ run build
+
+# Check if db exists
+FILE=/share/keypadusers.db
+if test -f "$FILE"; then
+    bashio::log.info "$FILE exists."
+else
+    bashio::log.info "Creating $FILE."
+    npm --prefix /usr/src/ run prismapush
+fi
+
+
 bashio::log.info "Starting Node Server..."
+npm --prefix /usr/src/ run dev
 
 ## Run your program
-exec /usr/bin/my_program
+# exec /usr/bin/my_program

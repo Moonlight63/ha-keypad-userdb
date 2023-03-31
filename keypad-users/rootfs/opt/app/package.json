@@ -1,0 +1,32 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare && prisma generate && prisma migrate deploy"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.3",
+    "@types/ws": "^8.5.4",
+    "nuxt": "^3.2.2",
+    "prisma": "^4.10.1"
+  },
+  "dependencies": {
+    "@mdi/font": "^7.1.96",
+    "@prisma/client": "^4.10.1",
+    "@trpc/client": "^10.16.0",
+    "@trpc/server": "^10.16.0",
+    "@vee-validate/zod": "^4.8.3",
+    "@vuelidate/core": "^2.0.1",
+    "@vuelidate/validators": "^2.0.1",
+    "sass": "^1.59.3",
+    "superjson": "^1.12.2",
+    "trpc-nuxt": "^0.7.0",
+    "vee-validate": "^4.8.3",
+    "vuetify": "^3.1.4",
+    "ws": "^8.13.0",
+    "zod": "^3.21.4"
+  }
+}
