@@ -144,6 +144,21 @@ export const usersRouter = router({
       return false
 
 
+    }),
+
+  changeActiveState: publicProcedure
+    .input(z.object({ id: z.string(), value: z.boolean() }))
+    .output(z.boolean())
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const res = await ctx.prisma.user.update({ where: { id: input.id }, data: { active: input.value } })
+        if (!res)
+          return false
+
+        return true
+      } catch (error) {
+        return false
+      }
     })
 
 })

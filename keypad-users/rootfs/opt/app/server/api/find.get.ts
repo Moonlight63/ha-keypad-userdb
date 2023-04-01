@@ -1,3 +1,4 @@
+import { User } from '@prisma/client'
 import type { H3Event } from 'h3'
 
 import { defineEventHandler } from 'h3'
@@ -37,21 +38,21 @@ export default defineEventHandler(async (event: H3Event) => {
 
     switch (query.code.toString().length) {
       case 4:
-        result = (await prisma.user.findFirst({ where: { code: { code: query.code as string } } }))?.name || false
+        result = (await prisma.user.findFirst({ where: { code: { code: query.code as string } } })) || false
         break;
       case 6:
-        result = (await prisma.print.findUnique({ where: { code: query.code as string }, include: { user: true } }))?.user.name || false
+        result = (await prisma.print.findUnique({ where: { code: query.code as string }, include: { user: true } }))?.user || false
         break;
       case 8:
-        result = (await prisma.user.findFirst({ where: { tag: { code: query.code as string } } }))?.name || false
+        result = (await prisma.user.findFirst({ where: { tag: { code: query.code as string } } })) || false
         break;
       default:
         break;
     }
-    if (result && process.env.SUPERVISOR_TOKEN) {
-      await fireEvent(result as string)
-    }
-    return result
+    // if (result && process.env.SUPERVISOR_TOKEN) {
+    //   await fireEvent(result as string)
+    // }
+    return result && (result as User).active ? (result as User).name : false
   }
   return false
 

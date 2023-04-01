@@ -75,6 +75,20 @@ function editUser(id: string) {
   navigateTo(id)
 }
 
+async function changeActive(value: boolean, idx: number) {
+  // console.log("🚀 ~ file: index.vue:79 ~ changeActive ~ value:", value, users.value?.[idx].id)
+  
+  if(users.value?.[idx]) {
+    users.value[idx].active = value
+    try {
+      const res = await useNuxtApp().$client.user.changeActiveState.mutate({ id: users.value[idx].id, value})
+      console.log("🚀 ~ file: index.vue:85 ~ changeActive ~ res:", res)
+    } catch (error) {
+      tryRefresh()
+    }
+  }
+}
+
 </script>
 
 <template>
@@ -106,11 +120,11 @@ function editUser(id: string) {
           </thead>
           <tbody>
             <tr
-              v-for="item in users"
-              :key="item.name"
+              v-for="item, index in users"
+              :key="item.id"
             >
               <td>
-                <v-checkbox-btn />
+                <v-checkbox-btn :model-value="item.active" @update:model-value="changeActive($event, index)" />
               </td>
               <td>{{ item.name }}</td>
               <td>
