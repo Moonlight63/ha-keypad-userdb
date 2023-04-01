@@ -22,9 +22,7 @@ async function sendUserFound(name: string) {
 
 }
 
-
-
-export default defineNitroPlugin(async (nitro) => {
+export default defineNitroPlugin(async () => {
 
   console.log("HA Socket Plugin");
 
@@ -37,41 +35,41 @@ export default defineNitroPlugin(async (nitro) => {
 
     HAConnection = await createConnection({ auth });
 
-    HAConnection.subscribeEvents(async (event: HassEvent) => {
+    const getPin = async (event: HassEvent) => {
       if (event.data.code && prisma) {
         const res = (await prisma.user.findFirst({ where: { code: { code: event.data.code.toString() } } }))?.name || false
         if (res) {
           await sendUserFound(res)
         }
       }
-    }, "keypaddb.getPin");
-    
-    HAConnection.subscribeEvents(async (event: HassEvent) => {
-      if (event.data.code && prisma) {
-        const res = (await prisma.user.findFirst({ where: { code: { code: event.data.code.toString() } } }))?.name || false
-        if (res) {
-          await sendUserFound(res)
-        }
-      }
-    }, "esphome.keypaddb.getPin");
+    }
 
-    HAConnection.subscribeEvents(async (event: HassEvent) => {
+    const getPrint = async (event: HassEvent) => {
       if (event.data.code && prisma) {
         const res = (await prisma.print.findUnique({ where: { code: event.data.code.toString() }, include: { user: true } }))?.user.name || false
         if (res) {
           await sendUserFound(res)
         }
       }
-    }, "keypaddb.getPrint");
+    }
 
-    HAConnection.subscribeEvents(async (event: HassEvent) => {
+    const getTag = async (event: HassEvent) => {
       if (event.data.code && prisma) {
         const res = (await prisma.user.findFirst({ where: { tag: { code: event.data.code.toString() } } }))?.name || false
         if (res) {
           await sendUserFound(res)
         }
       }
-    }, "keypaddb.getTag");
+    }
+
+    HAConnection.subscribeEvents(getPin, "keypaddb.getPin");
+    HAConnection.subscribeEvents(getPin, "esphome.keypaddb.getPin");
+
+    HAConnection.subscribeEvents(getPrint, "keypaddb.getPrint");
+    HAConnection.subscribeEvents(getPrint, "esphome.keypaddb.getPrint");
+
+    HAConnection.subscribeEvents(getTag, "keypaddb.getTag");
+    HAConnection.subscribeEvents(getTag, "esphome.keypaddb.getTag");
 
 
   }
