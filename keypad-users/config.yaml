@@ -4,7 +4,6 @@ version: 1.0.0
 slug: keypad-users
 description: A simple webapp to manage credentials for a keypad. Still much to do.
 url: https://github.com/Moonlight63/ha-keypad-userdb/tree/main/keypad-users
-codenotary: dalencattmlsp@gmail.com
 ingress: true
 ingress_port: 0
 ingress_stream: true
