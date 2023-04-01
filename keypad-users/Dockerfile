@@ -51,11 +51,15 @@ HEALTHCHECK CMD curl --fail http://127.0.0.1:35156 || exit 1
 
 WORKDIR /opt/app
 
+RUN npm install
+
 RUN if [ "$BUILD_ARCH" = "i386" ]; then \
-        export PRISMA_CLIENT_ENGINE_TYPE=binary; \
+        PRISMA_CLIENT_ENGINE_TYPE=binary npm run postinstall; \
+    else \
+        npm run postinstall; \
     fi
 
-RUN npm install && npm run postinstall && npm run build
+RUN npm run build
 
 # Build arguments
 ARG BUILD_ARCH
