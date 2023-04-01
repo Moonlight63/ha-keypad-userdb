@@ -49,6 +49,10 @@ ENV DATABASE_URL=file:/share/keypad_users.db
 # Health check
 HEALTHCHECK CMD curl --fail http://127.0.0.1:35156 || exit 1
 
+WORKDIR /opt/app
+
+RUN npm install && npm run postinstall && npm run build
+
 # Build arguments
 ARG BUILD_ARCH
 ARG BUILD_DATE

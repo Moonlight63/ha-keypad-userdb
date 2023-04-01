@@ -5,20 +5,20 @@
 # Home Assistant Local Add-on: Nuxt App
 # Handles configuration
 # ==============================================================================
-readonly APPNAME="nuxtapp"
-readonly CONFIG="/data/${APPNAME}/config.yaml"
-declare schema_version
-declare -a interfaces
-declare -a hosts
-declare part
-declare fd
-declare a2
+# readonly APPNAME="nuxtapp"
+# readonly CONFIG="/data/${APPNAME}/config.yaml"
+# declare schema_version
+# declare -a interfaces
+# declare -a hosts
+# declare part
+# declare fd
+# declare a2
 
-# Copy config file
-if ! bashio::fs.file_exists "${CONFIG}"; then
-    mkdir -p /data/${APPNAME}
-    cp /etc/${APPNAME}/config.yaml "${CONFIG}"
-fi
+# # Copy config file
+# if ! bashio::fs.file_exists "${CONFIG}"; then
+#     mkdir -p /data/${APPNAME}
+#     cp /etc/${APPNAME}/config.yaml "${CONFIG}"
+# fi
 
 # port=$(bashio::addon.port "53/udp") \
 #   yq e --inplace '.dns.port = env(port)' "${CONFIG}" \
@@ -44,6 +44,6 @@ fi
 #     bashio::exit.nok
 # fi
 
-npm --prefix /opt/app install
-npm --prefix /opt/app run postinstall
-npm --prefix /opt/app run build
+# npm --prefix /opt/app install
+# npm --prefix /opt/app run postinstall
+# npm --prefix /opt/app run build

@@ -1,36 +1,69 @@
-# Home Assistant Community Add-on: AdGuard Home
+# Home Assistant Keypad Database Addon
 
-[AdGuard Home][adguard] is a network-wide ad-and-tracker blocking DNS server
-with parental control (adult content blocking) capabilities. Its purpose is to
-let you control your entire network and all your devices, and it does not
-require using a client-side program.
-
-AdGuard Home provides a beautiful, easy and feature-rich web interface to
-easily manage the filtering process and its settings.
+This is a very very basic addon that contains a webapp and sql for creating and managing credentials
 
 ## Installation
 
-The installation of this add-on is pretty straightforward and not different in
-comparison to installing any other Home Assistant add-on.
+~~Install the addon by adding the following repository URL to your Home Assistant addon store:~~
 
-1. **Ensure your Home Assistant device has a
-   [static IP and static external DNS servers!](https://github.com/home-assistant/hassos/blob/dev/Documentation/network.md#static-ip)**
-   This is important! You **WILL** end up having issues if you skip this step.
-   - Change this setting in Network:
-     [![Open your Home Assistant instance and manage your systems network configuration.](https://my.home-assistant.io/badges/network.svg)](https://my.home-assistant.io/redirect/network/)
-     (_Settings → System → Network
-     → Configure network interfaces → Your Interface → IPv4 → Static_)
-   - Please note, setting a fixed IP in your router is **NOT** static.
-1. Click the Home Assistant My button below to open the add-on on your Home
-   Assistant instance.
+I have not set up automatic builds for docker hub yet, so for now I am just git cloning and local building
+the repo in my local addons folder. I will work on publishing later once I have thing more feature compelete.
 
-   [![Open this add-on in your Home Assistant instance.][addon-badge]][addon]
+```bash
+https://github.com/Moonlight63/ha-keypad-userdb.git
+```
 
-1. Click the "Install" button to install the add-on.
-1. Start the "AdGuard Home" add-on.
-1. Check the logs of the "AdGuard Home" to see if everything went well.
-1. Click the "OPEN WEB UI" button and log in with your Home Assistant account.
-1. Ready to go!
+Once the addon is installed, make sure to start it and check Add to Sidebar, then navigate to its web app
+by clicking on the addon from the Home Assistant sidebar.
+
+In the web app, you can add, edit, and delete users as well as their access codes.
+
+To use the addon with esphome, add the following YAML code to your esphome configuration:
+
+```yaml
+# Example configuration entry
+wiegand:
+  - id: mykeypad
+    d0: GPIO22
+    d1: GPIO23
+    on_tag:
+      - if:
+          condition:
+            lambda: |-
+              return strlen(x.c_str()) > 6;
+          then:
+            - homeassistant.event:
+                event: esphome.keypaddb.getPrint
+                data:
+                  code: !lambda "return x.c_str();"
+          else:
+            - homeassistant.event:
+                event: esphome.keypaddb.getTag
+                data:
+                  code: !lambda "return x.c_str();"
+
+key_collector:
+  - id: pincode_reader
+    source_id: mykeypad
+    min_length: 4
+    max_length: 4
+    end_key_required: false
+    allowed_keys: "0123456789"
+    timeout: 5s
+    on_result:
+      - homeassistant.event:
+          event: esphome.keypaddb.getPin
+          data:
+            code: !lambda "return x.c_str();"
+    on_timeout:
+      - logger.log:
+          format: "input timeout: '%s', started by '%c'"
+          args: ["x.c_str()", "(start == 0 ? '~' : start)"]
+```
+
+Where GPIO22,23 are connected to your keypad, 6 is the length of your
+fingerprint id code (see configuration options below), and 4 is the
+length of your pin codes.
 
 ## Configuration
 
@@ -39,33 +72,39 @@ comparison to installing any other Home Assistant add-on.
 Example add-on configuration:
 
 ```yaml
-log_level: info
-ssl: true
-certfile: fullchain.pem
-keyfile: privkey.pem
+pin_length: 4
+print_length: 6
+rfid_length: 8
 ```
 
 **Note**: _This is just an example, don't copy and paste it! Create your own!_
 
-### Option: `log_level`
+### Option: `pin_length`
 
-The `log_level` option controls the level of log output by the addon and can
-be changed to be more or less verbose, which might be useful when you are
-dealing with an unknown issue. Possible values are:
+Changes the expected length of pin code entries. Changing this will affect the
+user interface of the addon, as well as change how the pin codes are stored and searched.
 
-- `trace`: Show every detail, like all called internal functions.
-- `debug`: Shows detailed debug information.
-- `info`: Normal (usually) interesting events.
-- `warning`: Exceptional occurrences that are not errors.
-- `error`: Runtime errors that do not require immediate action.
-- `fatal`: Something went terribly wrong. Add-on becomes unusable.
+### Option: `print_length`
 
-Please note that each level automatically includes log messages from a
-more severe level, e.g., `debug` also shows `info` messages. By default,
-the `log_level` is set to `info`, which is the recommended setting unless
-you are troubleshooting.
+Changes the expected length of fingerprint id entries. Changing this will affect the
+user interface of the addon, as well as change how fingerprint IDs are stored and searched.
+
+This value should not be equal to rfid_length, as most weigand keypads send fingerprints as
+rfid tag signals. We use the returned length of the scanned tag value to determin if it is a
+fingerprint scan or an rfid tag scan.
+
+### Option: `rfid_length`
+
+Changes the expected length of rfid tag entries. Changing this will affect the
+user interface of the addon, as well as change how rfid tags are stored and searched.
+
+This value should not be equal to print_length, as most weigand keypads send fingerprints as
+rfid tag signals. We use the returned length of the scanned tag value to determin if it is a
+fingerprint scan or an rfid tag scan.
 
 ### Option: `ssl`
+
+#### Currently Unused
 
 Enables/Disables SSL (HTTPS) on the add-on. Set it `true` to enable it,
 `false` otherwise.
@@ -75,17 +114,23 @@ on the Ingress service._
 
 ### Option: `certfile`
 
+#### Currently Unused
+
 The certificate file to use for SSL.
 
 **Note**: _The file MUST be stored in `/ssl/`, which is the default_
 
 ### Option: `keyfile`
 
+#### Currently Unused
+
 The private key file to use for SSL.
 
 **Note**: _The file MUST be stored in `/ssl/`, which is the default_
 
 ### Option: `leave_front_door_open`
+
+#### Currently Unused
 
 Adding this option to the add-on configuration allows you to disable
 authentication on the AdGuard Home by setting it to `true`.
@@ -131,8 +176,6 @@ You could also [open an issue here][issue] GitHub.
 
 ## Authors & contributors
 
-The original setup of this repository is by [Franck Nijhof][frenck].
-
 For a full list of all authors and contributors,
 check [the contributor's page][contributors].
 
@@ -140,7 +183,7 @@ check [the contributor's page][contributors].
 
 MIT License
 
-Copyright (c) 2019-2023 Franck Nijhof
+Copyright (c) 2022-2023 Dalen Catt
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -159,16 +202,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-[addon-badge]: https://my.home-assistant.io/badges/supervisor_addon.svg
-[addon]: https://my.home-assistant.io/redirect/supervisor_addon/?addon=a0d7b954_adguard&repository_url=https%3A%2F%2Fgithub.com%2Fhassio-addons%2Frepository
-[adguard]: https://adguard.com/en/adguard-home/overview.html
-[contributors]: https://github.com/hassio-addons/addon-adguard-home/graphs/contributors
-[discord-ha]: https://discord.gg/c5DvZ4e
-[discord]: https://discord.me/hassioaddons
-[forum]: https://community.home-assistant.io/t/home-assistant-community-add-on-adguard-home/90684?u=frenck
-[frenck]: https://github.com/frenck
-[issue]: https://github.com/hassio-addons/addon-adguard-home/issues
-[reddit]: https://reddit.com/r/homeassistant
-[releases]: https://github.com/hassio-addons/addon-adguard-home/releases
-[semver]: http://semver.org/spec/v2.0.0.htm
