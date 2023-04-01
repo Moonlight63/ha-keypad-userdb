@@ -30,8 +30,8 @@ const runtimeValues = useRuntimeConfig().public;
 const rules = {
   code: {
     required,
-    minLength: minLength(parseInt(runtimeValues.printCodeLength, 10)),
-    maxLenth: maxLength(parseInt(runtimeValues.printCodeLength, 10)),
+    minLength: minLength(parseInt(runtimeValues.printLength, 10)),
+    maxLenth: maxLength(parseInt(runtimeValues.printLength, 10)),
     numeric,
   },
 };
@@ -44,7 +44,7 @@ const $v = useVuelidate(rules, toRef(props, "modelValue"), {
 <template>
   <v-text-field
     :error-messages="$v.code.$errors[0]?.$message.toString() || undefined"
-    :counter="parseInt(runtimeValues.printCodeLength, 10)"
+    :counter="parseInt(runtimeValues.printLength, 10)"
     v-model="$v.code.$model"
     :label="props.label"
     append-icon="mdi-close"

@@ -9,7 +9,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       pinLength: '4',
-      printCodeLength: '6',
+      printLength: '6',
       rfidLength: '8'
     }
   },

@@ -1,6 +1,6 @@
 ---
 name: Keypad Users DB
-version: 1.0.0
+version: 1.0.1
 slug: keypad-users
 description: A simple webapp to manage credentials for a keypad. Still much to do.
 url: https://github.com/Moonlight63/ha-keypad-userdb/tree/main/keypad-users

@@ -67,7 +67,7 @@ export const usersRouter = router({
       name: z.string().nonempty("This field is required.").min(3, "Must be at least 3 characters.").regex(/^[a-zA-Z]/, "Only Letters are allowed."),
       code: z.string().length(parseInt(runtimeValues.pinLength, 10)).nullish().or(z.literal('')).transform(e => e === '' ? undefined : e),
       tag: z.string().length(parseInt(runtimeValues.rfidLength, 10)).nullish().or(z.literal('')).transform(e => e === '' ? undefined : e),
-      prints: z.array(z.string().length(parseInt(runtimeValues.printCodeLength, 10))).nullish()
+      prints: z.array(z.string().length(parseInt(runtimeValues.printLength, 10))).nullish()
     }))
     .output(z.boolean())
     .mutation(async ({ input, ctx }) => {
