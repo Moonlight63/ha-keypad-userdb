@@ -45,6 +45,15 @@ export default defineNitroPlugin(async (nitro) => {
         }
       }
     }, "keypaddb.getPin");
+    
+    HAConnection.subscribeEvents(async (event: HassEvent) => {
+      if (event.data.code && prisma) {
+        const res = (await prisma.user.findFirst({ where: { code: { code: event.data.code.toString() } } }))?.name || false
+        if (res) {
+          await sendUserFound(res)
+        }
+      }
+    }, "esphome.keypaddb.getPin");
 
     HAConnection.subscribeEvents(async (event: HassEvent) => {
       if (event.data.code && prisma) {
