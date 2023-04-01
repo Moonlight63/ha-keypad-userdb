@@ -16,6 +16,7 @@ arch:
   - armhf
   - armv7
   - i386
+image: "moonlight63/keypad-users-hassio-addon-{arch}"
 init: false
 ports:
   80/tcp: null

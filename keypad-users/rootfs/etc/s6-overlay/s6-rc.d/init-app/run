@@ -46,4 +46,4 @@
 
 # npm --prefix /opt/app install
 # npm --prefix /opt/app run postinstall
-# npm --prefix /opt/app run build
+npm --prefix /opt/app run deploy

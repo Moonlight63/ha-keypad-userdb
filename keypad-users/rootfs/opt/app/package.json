@@ -5,7 +5,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare && prisma generate && prisma migrate deploy"
+    "postinstall": "nuxt prepare && prisma generate",
+    "deploy": " prisma migrate deploy"
   },
   "devDependencies": {
     "@types/node": "^18.15.3",
