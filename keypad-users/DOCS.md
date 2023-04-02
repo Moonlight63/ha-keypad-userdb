@@ -4,10 +4,11 @@ This is a very very basic addon that contains a webapp and sql for creating and 
 
 ## Installation
 
-~~Install the addon by adding the following repository URL to your Home Assistant addon store:~~
+For the time being, this addon only supports 64 bit. I know this is going to be a problem for
+some running homeassistant on rpi 3. Unfortunatly, I did not realize that prisma did not have
+precompiled binaries for anything other than 64 bit, so I need to compile it myself.
 
-I have not set up automatic builds for docker hub yet, so for now I am just git cloning and local building
-the repo in my local addons folder. I will work on publishing later once I have thing more feature compelete.
+Install the addon by adding the following repository URL to your Home Assistant addon store:
 
 ```bash
 https://github.com/Moonlight63/ha-keypad-userdb.git
@@ -30,15 +31,15 @@ wiegand:
       - if:
           condition:
             lambda: |-
-              return strlen(x.c_str()) > 6;
+              return x.length() > 6;
           then:
             - homeassistant.event:
-                event: esphome.keypaddb.getPrint
+                event: esphome.keypaddb.getTag
                 data:
                   code: !lambda "return x.c_str();"
           else:
             - homeassistant.event:
-                event: esphome.keypaddb.getTag
+                event: esphome.keypaddb.getPrint
                 data:
                   code: !lambda "return x.c_str();"
 
